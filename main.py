@@ -1,6 +1,5 @@
 import sys
 import os
-import requests
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, \
@@ -107,8 +106,15 @@ class WinampClone(QMainWindow):
 
     def update_song_label(self, state):
         if state == QMediaPlayer.PlayingState:
-            self.current_song_label.setText(
-                "Now Playing: " + os.path.basename(self.media_player.currentMedia().canonicalUrl().path()))
+            current_song_path = self.media_player.currentMedia().canonicalUrl().toLocalFile()
+            try:
+                audio = EasyID3(current_song_path)
+                song_name = audio.get("title", ["Unknown Title"])[0]
+                artist_name = audio.get("artist", ["Unknown Artist"])[0]
+                self.current_song_label.setText(f"Now Playing: {song_name} - {artist_name}")
+            except Exception as e:
+                print(f"Error reading metadata: {e}")
+                self.current_song_label.setText(f"Now Playing: {os.path.basename(current_song_path)}")
         else:
             self.current_song_label.setText("")
 
