@@ -1,20 +1,11 @@
 import requests
-from bs4 import BeautifulSoup
+import lyricsgenius
+def fetch_lyrics(artist, song):
+    # Create a LyricsGenius object with your Genius API access token
+    genius = lyricsgenius.Genius('o2HZ6LDQo8zYrgn-6m3d8QkhbXY5QANj1IYWAw6LPbusV1Xzg5rcWSYIk1bnPKPL')
+    song = genius.search_song(song, artist)
+    # Print the lyrics
+    return song.lyrics
 
-def fetch_lyrics(song_name, artist_name):
-    # Construct search query
-    query = f"{song_name} {artist_name} lyrics"
-    search_url = f"https://www.google.com/search?q={query}"
 
-    response = requests.get(search_url)
 
-    soup = BeautifulSoup(response.text, 'html.parser')
-
-    # Find the div containing the lyrics
-    lyrics_div = soup.find('div', class_='BNeawe tAd8D AP7Wnd')
-
-    if lyrics_div:
-        lyrics = lyrics_div.get_text('\n')  # Get the text with newlines
-        return lyrics
-    else:
-        return "Lyrics not found"

@@ -6,7 +6,6 @@ from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, \
     QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
-from bs4 import BeautifulSoup
 from mutagen.easyid3 import EasyID3
 
 from lyrics import fetch_lyrics
@@ -80,6 +79,7 @@ class WinampClone(QMainWindow):
         control_layout.addWidget(self.add_music_button)
 
         self.init_connections()
+
     def init_connections(self):
         self.media_player.stateChanged.connect(self.update_song_label)
         self.media_player.positionChanged.connect(self.update_lyrics)
@@ -163,7 +163,7 @@ class WinampClone(QMainWindow):
             try:
                 audio = EasyID3(song_path)
                 song_name = audio["title"][0]
-                artist_name = audio["artist"][0]
+                artist_name = audio.get("artist", ["Unknown"])[0]
             except Exception as e:
                 print(f"Error reading metadata: {e}")
                 song_name = os.path.splitext(os.path.basename(song_path))[0]
