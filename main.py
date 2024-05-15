@@ -7,6 +7,9 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHB
     QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from bs4 import BeautifulSoup
+from mutagen.easyid3 import EasyID3
+
+from lyrics import fetch_lyrics
 
 
 class WinampClone(QMainWindow):
@@ -115,11 +118,17 @@ class WinampClone(QMainWindow):
 
     def play_previous(self):
         # Play previous song
-        pass
+        current_index = self.playlist_view.currentRow()
+        if current_index > 0:
+            self.playlist_view.setCurrentRow(current_index - 1)
+            self.play_selected_song()
 
     def play_next(self):
         # Play next song
-        pass
+        current_index = self.playlist_view.currentRow()
+        if current_index < self.playlist_view.count() - 1:
+            self.playlist_view.setCurrentRow(current_index + 1)
+            self.play_selected_song()
 
     def load_playlist(self):
         file_dialog = QFileDialog()
@@ -146,7 +155,22 @@ class WinampClone(QMainWindow):
 
     def fetch_lyrics(self):
         # Fetch lyrics for current song
-        pass
+        index = self.playlist_view.currentRow()
+        if index >= 0:
+            song_path = self.playlist_view.currentItem().text()
+
+            # Extract song name and artist from metadata
+            try:
+                audio = EasyID3(song_path)
+                song_name = audio["title"][0]
+                artist_name = audio["artist"][0]
+            except Exception as e:
+                print(f"Error reading metadata: {e}")
+                song_name = os.path.splitext(os.path.basename(song_path))[0]
+                artist_name = "Unknown"
+
+            lyrics = fetch_lyrics(song_name, artist_name)
+            self.lyrics_display.setPlainText(lyrics)
 
     def recommend(self):
         # Recommend songs
