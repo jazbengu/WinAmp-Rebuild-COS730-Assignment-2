@@ -3,12 +3,11 @@ import os
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, \
-    QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider
+    QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from mutagen.easyid3 import EasyID3
-
+from smart_playlisting import generate_playlist, save_playlist
 from lyrics import fetch_lyrics
-
 
 class WinampClone(QMainWindow):
     def __init__(self):
@@ -30,10 +29,6 @@ class WinampClone(QMainWindow):
         self.stop_button = QPushButton("Stop")
         self.previous_button = QPushButton("Previous")
         self.next_button = QPushButton("Next")
-        self.load_playlist_button = QPushButton("Load Playlist")
-        self.save_playlist_button = QPushButton("Save Playlist")
-        self.fetch_lyrics_button = QPushButton("Fetch Lyrics")
-        self.recommend_button = QPushButton("Recommend")
 
         self.volume_slider = QSlider(Qt.Horizontal)
         self.volume_slider.setValue(50)  # Example initial volume
@@ -51,17 +46,6 @@ class WinampClone(QMainWindow):
         control_layout.addWidget(self.previous_button)
         control_layout.addWidget(self.next_button)
 
-        playlist_control_layout = QVBoxLayout()
-        playlist_control_layout.addWidget(self.load_playlist_button)
-        playlist_control_layout.addWidget(self.save_playlist_button)
-
-        lyrics_control_layout = QVBoxLayout()
-        lyrics_control_layout.addWidget(self.fetch_lyrics_button)
-        lyrics_control_layout.addWidget(self.recommend_button)
-
-        control_layout.addLayout(playlist_control_layout)
-        control_layout.addLayout(lyrics_control_layout)
-
         layout = QVBoxLayout()
         layout.addWidget(self.playlist_view)
         layout.addWidget(self.current_song_label)
@@ -71,13 +55,43 @@ class WinampClone(QMainWindow):
 
         central_widget.setLayout(layout)
 
-        self.add_music_button = QPushButton("Add Music")
-        self.add_music_button.setIcon(QIcon("+"))  # You can replace "add_music_icon.png" with your icon path
-
-        # Add the button to the layout
-        control_layout.addWidget(self.add_music_button)
+        self.create_menu()
 
         self.init_connections()
+
+    def create_menu(self):
+        menu_bar = self.menuBar()
+
+        # File menu
+        file_menu = menu_bar.addMenu("File")
+
+        fetch_lyrics_action = QAction("Fetch Lyrics", self)
+        fetch_lyrics_action.triggered.connect(self.fetch_lyrics)
+        file_menu.addAction(fetch_lyrics_action)
+
+        recommend_action = QAction("Recommend", self)
+        recommend_action.triggered.connect(self.recommend)
+        file_menu.addAction(recommend_action)
+
+
+        add_music_action = QAction("Add Music", self)
+        add_music_action.triggered.connect(self.add_music_dialog)
+        file_menu.addAction(add_music_action)
+
+
+
+        # Playlisting menu
+        playlisting_menu = menu_bar.addMenu("Playlisting")
+
+        load_playlist_action = QAction("Load Playlist", self)
+        load_playlist_action.triggered.connect(self.load_playlist)
+        playlisting_menu.addAction(load_playlist_action)
+
+        save_playlist_action = QAction("Save Playlist", self)
+        save_playlist_action.triggered.connect(self.save_playlist)
+        playlisting_menu.addAction(save_playlist_action)
+
+
 
     def init_connections(self):
         self.media_player.stateChanged.connect(self.update_song_label)
@@ -87,22 +101,24 @@ class WinampClone(QMainWindow):
         self.stop_button.clicked.connect(self.media_player.stop)
         self.previous_button.clicked.connect(self.play_previous)
         self.next_button.clicked.connect(self.play_next)
-        self.load_playlist_button.clicked.connect(self.load_playlist)
-        self.save_playlist_button.clicked.connect(self.save_playlist)
-        self.fetch_lyrics_button.clicked.connect(self.fetch_lyrics)
-        self.recommend_button.clicked.connect(self.recommend)
         self.volume_slider.valueChanged.connect(self.media_player.setVolume)
         self.playlist_view.doubleClicked.connect(self.play_selected_song)
-        self.add_music_button.clicked.connect(self.add_music_dialog)
 
     def add_music_dialog(self):
         file_dialog = QFileDialog()
-        file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        file_dialog.setNameFilter("Music Files (*.mp3 *.wav)")
+        file_dialog.setFileMode(QFileDialog.DirectoryOnly)
+        file_dialog.setOption(QFileDialog.ShowDirsOnly, True)
         if file_dialog.exec_():
-            music_files = file_dialog.selectedFiles()
-            for music_file in music_files:
-                self.playlist_view.addItem(music_file)
+            directories = file_dialog.selectedFiles()
+            for directory in directories:
+                self.add_music_from_directory(directory)
+
+    def add_music_from_directory(self, directory):
+        music_extensions = ('.mp3', '.wav')
+        for root, dirs, files in os.walk(directory):
+            for file in files:
+                if file.lower().endswith(music_extensions):
+                    self.playlist_view.addItem(os.path.join(root, file))
 
     def update_song_label(self, state):
         if state == QMediaPlayer.PlayingState:
@@ -190,13 +206,11 @@ class WinampClone(QMainWindow):
             self.media_player.setMedia(media)
             self.media_player.play()
 
-
 def main():
     app = QApplication(sys.argv)
     winamp = WinampClone()
     winamp.show()
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()
