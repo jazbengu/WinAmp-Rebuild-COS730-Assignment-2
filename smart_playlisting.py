@@ -1,55 +1,34 @@
-import os
-import librosa
-from PyQt5.QtWidgets import QFileDialog
+from PyQt5.QtWidgets import QDialog, QVBoxLayout, QCheckBox, QLineEdit, QPushButton, QLabel, QFileDialog
 
-def create_playlist(self, min_tempo=None, max_tempo=None):
-    playlist_name = self.playlist_name_edit.text()
 
-    # Create an empty list to store the criteria
-    criteria = []
+class SmartPlaylistDialog(QDialog):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Create Smart Playlist")
+        self.setGeometry(100, 100, 300, 200)
 
-    # Check each checkbox and add the selected criteria to the list
-    if self.tempo_checkbox.isChecked():
-        criteria.append("tempo")
-    if self.mood_checkbox.isChecked():
-        criteria.append("mood")
-    if self.artist_checkbox.isChecked():
-        criteria.append("artist")
-    if self.genre_checkbox.isChecked():
-        criteria.append("genre")
+        self.layout = QVBoxLayout()
 
-    # Prompt the user to choose a directory to save the playlist
-    save_dir = QFileDialog.getExistingDirectory(self, 'Select Directory to Save Playlist')
+        self.playlist_name_label = QLabel("Playlist Name:")
+        self.playlist_name_edit = QLineEdit()
 
-    if save_dir:  # If the user selects a directory
-        # Use the criteria to generate the playlist locally
-        playlist_tracks = []
-        for root, dirs, files in os.walk('/path/to/your/music/folder'):  # Change this path to your music folder
-            for file in files:
-                if file.endswith('.mp3'):
-                    file_path = os.path.join(root, file)
-                    # Extract features
-                    y, sr = librosa.load(file_path)
-                    tempo, _ = librosa.beat.tempo(y=y, sr=sr)
-                    mood = "Your mood analysis function here"  # Implement your mood analysis function
-                    artist = "Your artist extraction function here"  # Implement your artist extraction function
-                    genre = "Your genre extraction function here"  # Implement your genre extraction function
+        self.tempo_checkbox = QCheckBox("Tempo")
+        self.mood_checkbox = QCheckBox("Mood")
+        self.artist_checkbox = QCheckBox("Artist")
+        self.genre_checkbox = QCheckBox("Genre")
 
-                    # Filter based on criteria
-                    include_track = True
-                    for criterion in criteria:
-                        if criterion == "tempo" and not (tempo >= min_tempo and tempo <= max_tempo):
-                            include_track = False
-                        # Add similar conditions for mood, artist, and genre filtering
+        self.create_button = QPushButton("Create")
+        self.create_button.clicked.connect(self.create_playlist)
 
-                    if include_track:
-                        playlist_tracks.append(file_path)
+        self.layout.addWidget(self.playlist_name_label)
+        self.layout.addWidget(self.playlist_name_edit)
+        self.layout.addWidget(self.tempo_checkbox)
+        self.layout.addWidget(self.mood_checkbox)
+        self.layout.addWidget(self.artist_checkbox)
+        self.layout.addWidget(self.genre_checkbox)
+        self.layout.addWidget(self.create_button)
 
-        # Write the list of tracks to a playlist file
-        playlist_file_path = os.path.join(save_dir, f"{playlist_name}.m3u")
-        with open(playlist_file_path, 'w') as playlist_file:
-            for track in playlist_tracks:
-                playlist_file.write(track + '\n')
+        self.setLayout(self.layout)
 
-        # Once the playlist is created, close the dialog
+    def create_playlist(self):
         self.accept()
