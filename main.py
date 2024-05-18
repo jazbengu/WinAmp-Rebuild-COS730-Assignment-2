@@ -291,10 +291,19 @@ class WinampClone(QMainWindow):
             self.lyrics_tab.setPlainText(lyrics)
 
     def recommend(self):
-        recommendations = Recommendations('e5c68b6daf1949a1a0e6ba5d16dc6fb9', '90eb05f4d6f345ed8c810de980d5a112', 'http://localhost:8888/callback')
         current_song_path = self.media_player.currentMedia().canonicalUrl().toLocalFile()
-        recommendations.fetch_recommendations(current_song_path)
-        self.recommendations_tab.setPlainText(json.dumps(recommendations, indent=4))
+        try:
+            audio = EasyID3(current_song_path)
+            artist_name = audio.get("artist", ["Unknown Artist"])[0]
+            song_name = audio.get("title", ["Unknown Title"])[0]
+        except Exception as e:
+            print(f"Error reading metadata: {e}")
+            artist_name = "Unknown Artist"
+            song_name = "Unknown Title"
+        recommendations = Recommendations('f2681cc2f1d85058b663546766ad0c82')
+        recommendations.fetch_recommendations(artist_name, song_name, self.tabs)
+
+
 
     def play_selected_song(self):
         index = self.playlist_view.currentRow()
