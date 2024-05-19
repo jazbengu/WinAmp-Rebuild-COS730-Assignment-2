@@ -4,11 +4,25 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Create and fixed functionalities" />
+    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="started smart playlist implementation and recommedations">
+      <change beforePath="$PROJECT_DIR$/.idea/Winamp.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Winamp.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recs.py" beforeDir="false" afterPath="$PROJECT_DIR$/recs.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="PREVIOUS_COMMIT_AUTHORS">
@@ -20,9 +34,21 @@
     <option name="SIGN_OFF_COMMIT" value="true" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 5
-}]]></component>
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;jazbengu&quot;
+  }
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jazbengu/WinAmp-Rebuild-COS730-Assignment-2.git&quot;,
+    &quot;accountId&quot;: &quot;ddc2a6e3-7a20-4b3d-b9fa-e0bee70b4fed&quot;
+  }
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
   <component name="ProjectId" id="2gVJ7b692NXzsLgfZAAVTtYLUQa" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -31,14 +57,24 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_ADD_EXTERNAL_FILES": "true",
-    "Python.main.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "master"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
+    &quot;Python.lyrics.executor&quot;: &quot;Run&quot;,
+    &quot;Python.main.executor&quot;: &quot;Run&quot;,
+    &quot;Python.recs.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/zozoj/PycharmProjects/Winamp&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
   }
-}]]></component>
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\zozoj\PycharmProjects\Winamp" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -71,7 +107,87 @@
       <option name="project" value="LOCAL" />
       <updated>1715780138914</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="done">
+      <option name="closed" value="true" />
+      <created>1715780544102</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1715780544102</updated>
+    </task>
+    <task id="LOCAL-00004" summary="added 3 more files">
+      <option name="closed" value="true" />
+      <created>1715780677894</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1715780677894</updated>
+    </task>
+    <task id="LOCAL-00005" summary="started lyric functionalities">
+      <option name="closed" value="true" />
+      <created>1715782456045</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1715782456045</updated>
+    </task>
+    <task id="LOCAL-00006" summary="perfected lyric functionalities using Genius and LyricGenius">
+      <option name="closed" value="true" />
+      <created>1715798413569</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1715798413569</updated>
+    </task>
+    <task id="LOCAL-00007" summary="fixed the song label to show the name of the artist and song">
+      <option name="closed" value="true" />
+      <created>1715800459804</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1715800459804</updated>
+    </task>
+    <task id="LOCAL-00008" summary="removed the contributors and the embed text with the lyrics">
+      <option name="closed" value="true" />
+      <created>1715801157755</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1715801157755</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Created a menu bar">
+      <option name="closed" value="true" />
+      <created>1715949369240</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1715949369240</updated>
+    </task>
+    <task id="LOCAL-00010" summary="started smart playlist implementation">
+      <option name="closed" value="true" />
+      <created>1715963212034</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1715963212034</updated>
+    </task>
+    <task id="LOCAL-00011" summary="started smart playlist implementation and recommedations">
+      <option name="closed" value="true" />
+      <created>1716047052441</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1716047052441</updated>
+    </task>
+    <task id="LOCAL-00012" summary="started smart playlist implementation and recommedations">
+      <option name="closed" value="true" />
+      <created>1716052413279</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1716052413279</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -101,6 +217,27 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="true" />
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
     <MESSAGE value="Create and fixed functionalities" />
-    <option name="LAST_COMMIT_MESSAGE" value="Create and fixed functionalities" />
+    <MESSAGE value="done" />
+    <MESSAGE value="added 3 more files" />
+    <MESSAGE value="started lyric functionalities" />
+    <MESSAGE value="perfected lyric functionalities using Genius and LyricGenius" />
+    <MESSAGE value="fixed the song label to show the name of the artist and song" />
+    <MESSAGE value="removed the contributors and the embed text with the lyrics" />
+    <MESSAGE value="changed to choose the directory with music" />
+    <MESSAGE value="Created a menu bar" />
+    <MESSAGE value="started smart playlist implementation" />
+    <MESSAGE value="started smart playlist implementation and recommedations" />
+    <option name="LAST_COMMIT_MESSAGE" value="started smart playlist implementation and recommedations" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/main.py</url>
+          <line>290</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

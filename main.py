@@ -3,8 +3,7 @@ import sys
 import os
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, \
-    QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget
 from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
 from mutagen.easyid3 import EasyID3
 import librosa
@@ -197,7 +196,7 @@ class WinampClone(QMainWindow):
                 self.add_music_from_directory(directory)
 
     def add_music_from_directory(self, directory):
-        music_extensions = ('.mp3', '.wav')
+        music_extensions = ('.mp3', '.wav', '.m4a', '.wma', '.flac')
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.lower().endswith(music_extensions):
@@ -300,10 +299,11 @@ class WinampClone(QMainWindow):
             print(f"Error reading metadata: {e}")
             artist_name = "Unknown Artist"
             song_name = "Unknown Title"
+
+        print(f"Artist: {artist_name}, Track: {song_name}")  # Debugging print
+
         recommendations = Recommendations('f2681cc2f1d85058b663546766ad0c82')
         recommendations.fetch_recommendations(artist_name, song_name, self.tabs)
-
-
 
     def play_selected_song(self):
         index = self.playlist_view.currentRow()
