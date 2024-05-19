@@ -4,11 +4,12 @@ import os
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent
+from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist
 from mutagen.easyid3 import EasyID3
 import librosa
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+
 
 from recs import Recommendations
 from smart_playlisting import SmartPlaylistDialog
@@ -35,6 +36,8 @@ class WinampClone(QMainWindow):
         self.progress_slider.setRange(0, 0)
         self.current_time_label = QLabel("00:00")
         self.total_time_label = QLabel("00:00")
+        self.playlist = QMediaPlaylist()  # New QMediaPlaylist
+        self.media_player.setPlaylist(self.playlist)  # Set playlist to media player
         self.init_ui()
 
     def init_ui(self):
@@ -196,10 +199,11 @@ class WinampClone(QMainWindow):
                 self.add_music_from_directory(directory)
 
     def add_music_from_directory(self, directory):
-        music_extensions = ('.mp3', '.wav', '.m4a', '.wma', '.flac')
+        music_extensions = ('.mp3', '.wav', '.m4a', '.wma', '.flac', '.aac')
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.lower().endswith(music_extensions):
+                    self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(os.path.join(root, file))))
                     self.playlist_view.addItem(os.path.join(root, file))
 
     def update_song_label(self, state):
@@ -209,6 +213,7 @@ class WinampClone(QMainWindow):
                 audio = EasyID3(current_song_path)
                 song_name = audio.get("title", ["Unknown Title"])[0]
                 artist_name = audio.get("artist", ["Unknown Artist"])[0]
+                print(song_name,artist_name)
                 self.current_song_label.setText(f"Now Playing: {song_name} - {artist_name}")
             except Exception as e:
                 print(f"Error reading metadata: {e}")
@@ -310,9 +315,8 @@ class WinampClone(QMainWindow):
         if index >= 0:
             song_path = self.playlist_view.currentItem().text()
             media = QMediaContent(QUrl.fromLocalFile(song_path))
-            self.media_player.setMedia(media)
+            self.media_player.setMedia(media)  # Set media content
             self.media_player.play()
-
 
 def main():
     app = QApplication(sys.argv)
