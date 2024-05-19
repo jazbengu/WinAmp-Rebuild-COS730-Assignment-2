@@ -96,3 +96,5 @@ class Recommendations:
             # If no similar tracks found, fetch similar artists
             artist_recommendations = self.get_similar_artists(artist)
             self.display_artist_recommendations(artist_recommendations, tab_widget)
+
+
