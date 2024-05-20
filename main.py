@@ -1,15 +1,16 @@
 import json
 import sys
 import os
+import pygame
+from pygame import mixer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget
-from PyQt5.QtMultimedia import QMediaPlayer, QMediaContent, QMediaPlaylist
+from PyQt5.QtMultimedia import QMediaContent, QMediaPlaylist
 from mutagen.easyid3 import EasyID3
 import librosa
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
-
 
 from recs import Recommendations
 from smart_playlisting import SmartPlaylistDialog
@@ -21,8 +22,7 @@ class WinampClone(QMainWindow):
         super().__init__()
         self.setWindowTitle("Winamp Clone")
         self.setGeometry(100, 100, 800, 600)
-        self.media_player = QMediaPlayer()
-        self.media_player.setVolume(50)
+        mixer.init()  # Initialize Pygame mixer
         self.playlist_view = QListWidget()
         self.current_song_label = QLabel()
         self.play_button = QPushButton("Play")
@@ -36,8 +36,8 @@ class WinampClone(QMainWindow):
         self.progress_slider.setRange(0, 0)
         self.current_time_label = QLabel("00:00")
         self.total_time_label = QLabel("00:00")
-        self.playlist = QMediaPlaylist()  # New QMediaPlaylist
-        self.media_player.setPlaylist(self.playlist)  # Set playlist to media player
+        self.playlist = []  # Store playlist as a list of file paths
+        self.current_song_index = -1  # Index of the currently playing song
         self.init_ui()
 
     def init_ui(self):
@@ -109,18 +109,27 @@ class WinampClone(QMainWindow):
         playlisting_menu.addAction(save_playlist_action)
 
     def init_connections(self):
-        self.media_player.stateChanged.connect(self.update_song_label)
-        self.media_player.positionChanged.connect(self.update_position)
-        self.media_player.durationChanged.connect(self.update_duration)
-        self.progress_slider.sliderMoved.connect(self.set_position)
-
-        self.play_button.clicked.connect(self.media_player.play)
-        self.pause_button.clicked.connect(self.media_player.pause)
-        self.stop_button.clicked.connect(self.media_player.stop)
+        self.play_button.clicked.connect(self.play)
+        self.pause_button.clicked.connect(self.pause)
+        self.stop_button.clicked.connect(self.stop)
         self.previous_button.clicked.connect(self.play_previous)
         self.next_button.clicked.connect(self.play_next)
-        self.volume_slider.valueChanged.connect(self.media_player.setVolume)
+        self.volume_slider.valueChanged.connect(self.set_volume)
         self.playlist_view.doubleClicked.connect(self.play_selected_song)
+
+    def play(self):
+        if not pygame.mixer.music.get_busy() and self.current_song_index != -1:
+            pygame.mixer.music.load(self.playlist[self.current_song_index])
+            pygame.mixer.music.play()
+
+    def pause(self):
+        pygame.mixer.music.pause()
+
+    def stop(self):
+        pygame.mixer.music.stop()
+
+    def set_volume(self, volume):
+        pygame.mixer.music.set_volume(volume / 100)
 
     def create_smart_playlist(self):
         dialog = SmartPlaylistDialog()
@@ -203,58 +212,31 @@ class WinampClone(QMainWindow):
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.lower().endswith(music_extensions):
-                    self.playlist.addMedia(QMediaContent(QUrl.fromLocalFile(os.path.join(root, file))))
+                    self.playlist.append(os.path.join(root, file))
                     self.playlist_view.addItem(os.path.join(root, file))
 
-    def update_song_label(self, state):
-        if state == QMediaPlayer.PlayingState:
-            current_song_path = self.media_player.currentMedia().canonicalUrl().toLocalFile()
+    def update_song_label(self):
+        if pygame.mixer.music.get_busy():
+            current_song_path = self.playlist[self.current_song_index]
             try:
                 audio = EasyID3(current_song_path)
                 song_name = audio.get("title", ["Unknown Title"])[0]
                 artist_name = audio.get("artist", ["Unknown Artist"])[0]
-                print(song_name,artist_name)
+                print(song_name, artist_name)
                 self.current_song_label.setText(f"Now Playing: {song_name} - {artist_name}")
             except Exception as e:
                 print(f"Error reading metadata: {e}")
                 self.current_song_label.setText(f"Now Playing: {os.path.basename(current_song_path)}")
-        elif state == QMediaPlayer.StoppedState:
-            self.current_song_label.setText("")  # Clear the label only when stopped
-
-    def update_position(self, position):
-        self.progress_slider.setValue(position)
-        duration = self.media_player.duration()
-        if duration > 0:
-            self.progress_slider.setRange(0, duration)
-            self.current_time_label.setText(self.format_time(position))
-            self.total_time_label.setText(self.format_time(duration))
-
-    def update_duration(self, duration):
-        self.progress_slider.setRange(0, duration)
-
-    def set_position(self, position):
-        self.media_player.setPosition(position)
-
-    def format_time(self, ms):
-        seconds = (ms // 1000) % 60
-        minutes = (ms // 60000) % 60
-        hours = (ms // 3600000)
-        if hours > 0:
-            return f"{hours}:{minutes:02}:{seconds:02}"
-        else:
-            return f"{minutes}:{seconds:02}"
 
     def play_previous(self):
-        current_index = self.playlist_view.currentRow()
-        if current_index > 0:
-            self.playlist_view.setCurrentRow(current_index - 1)
-            self.play_selected_song()
+        if self.current_song_index > 0:
+            self.current_song_index -= 1
+            self.play()
 
     def play_next(self):
-        current_index = self.playlist_view.currentRow()
-        if current_index < self.playlist_view.count() - 1:
-            self.playlist_view.setCurrentRow(current_index + 1)
-            self.play_selected_song()
+        if self.current_song_index < len(self.playlist) - 1:
+            self.current_song_index += 1
+            self.play()
 
     def load_playlist(self):
         file_dialog = QFileDialog()
@@ -266,6 +248,7 @@ class WinampClone(QMainWindow):
                 with open(playlist_file, 'r') as file:
                     for line in file:
                         if line.strip():
+                            self.playlist.append(line.strip())
                             self.playlist_view.addItem(line.strip())
 
     def save_playlist(self):
@@ -276,13 +259,13 @@ class WinampClone(QMainWindow):
         if file_dialog.exec_():
             save_path = file_dialog.selectedFiles()[0]
             with open(save_path, 'w') as file:
-                for i in range(self.playlist_view.count()):
-                    file.write(self.playlist_view.item(i).text() + '\n')
+                for song_path in self.playlist:
+                    file.write(song_path + '\n')
 
     def fetch_lyrics(self):
         index = self.playlist_view.currentRow()
         if index >= 0:
-            song_path = self.playlist_view.currentItem().text()
+            song_path = self.playlist[index]
             try:
                 audio = EasyID3(song_path)
                 song_name = audio["title"][0]
@@ -295,32 +278,33 @@ class WinampClone(QMainWindow):
             self.lyrics_tab.setPlainText(lyrics)
 
     def recommend(self):
-        current_song_path = self.media_player.currentMedia().canonicalUrl().toLocalFile()
-        try:
-            audio = EasyID3(current_song_path)
-            artist_name = audio.get("artist", ["Unknown Artist"])[0]
-            song_name = audio.get("title", ["Unknown Title"])[0]
-        except Exception as e:
-            print(f"Error reading metadata: {e}")
-            artist_name = "Unknown Artist"
-            song_name = "Unknown Title"
+        if self.current_song_index != -1:
+            current_song_path = self.playlist[self.current_song_index]
+            try:
+                audio = EasyID3(current_song_path)
+                artist_name = audio.get("artist", ["Unknown Artist"])[0]
+                song_name = audio.get("title", ["Unknown Title"])[0]
+            except Exception as e:
+                print(f"Error reading metadata: {e}")
+                artist_name = "Unknown Artist"
+                song_name = "Unknown Title"
 
-        print(f"Artist: {artist_name}, Track: {song_name}")  # Debugging print
+            print(f"Artist: {artist_name}, Track: {song_name}")  # Debugging print
 
-        recommendations = Recommendations('f2681cc2f1d85058b663546766ad0c82')
-        recommendations.fetch_recommendations(artist_name, song_name, self.tabs)
+            recommendations = Recommendations('f2681cc2f1d85058b663546766ad0c82')
+            recommendations.fetch_recommendations(artist_name, song_name, self.tabs)
 
     def play_selected_song(self):
         index = self.playlist_view.currentRow()
         if index >= 0:
-            song_path = self.playlist_view.currentItem().text()
-            media = QMediaContent(QUrl.fromLocalFile(song_path))
-            self.media_player.setMedia(media)  # Set media content
-            self.media_player.play()
+            self.current_song_index = index
+            self.play()
+
 
 def main():
     app = QApplication(sys.argv)
     winamp = WinampClone()
+    winamp.setStyleSheet(open("style.qss").read())
     winamp.show()
     sys.exit(app.exec_())
 
