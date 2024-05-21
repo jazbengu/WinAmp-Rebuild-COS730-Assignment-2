@@ -1,11 +1,14 @@
 import json
 import sys
 import os
+
+import mutagen
 import pygame
 from pygame import mixer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, \
+    QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget, QLineEdit
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlaylist
 from mutagen.easyid3 import EasyID3
 import librosa
@@ -23,6 +26,7 @@ class WinampClone(QMainWindow):
         self.setWindowTitle("Winamp Clone")
         self.setGeometry(100, 100, 800, 600)
         mixer.init()  # Initialize Pygame mixer
+        self.search_box = QLineEdit()
         self.playlist_view = QListWidget()
         self.current_song_label = QLabel()
         self.play_button = QPushButton("Play")
@@ -61,6 +65,10 @@ class WinampClone(QMainWindow):
         layout.addWidget(self.volume_slider)
         central_widget.setLayout(layout)
         self.create_menu()
+        self.search_box = QLineEdit()
+        self.search_box.setPlaceholderText("Search...")
+        self.search_box.textChanged.connect(self.search_library)
+        layout.addWidget(self.search_box)
         self.init_connections()
 
         # Create tab widget
@@ -130,6 +138,18 @@ class WinampClone(QMainWindow):
 
     def set_volume(self, volume):
         pygame.mixer.music.set_volume(volume / 100)
+
+    def update_duration(self, duration):
+        duration_time = QTime(0, (duration / 60000) % 60, (duration / 1000) % 60)
+        self.total_time_label.setText(duration_time.toString())
+
+    def update_position(self, position):
+        position_time = QTime(0, (position / 60000) % 60, (position / 1000) % 60)
+        self.current_time_label.setText(position_time.toString())
+        self.progress_slider.setValue(position)
+
+    def set_position(self, position):
+        self.player.setPosition(position)
 
     def create_smart_playlist(self):
         dialog = SmartPlaylistDialog()
@@ -212,8 +232,21 @@ class WinampClone(QMainWindow):
         for root, dirs, files in os.walk(directory):
             for file in files:
                 if file.lower().endswith(music_extensions):
-                    self.playlist.append(os.path.join(root, file))
-                    self.playlist_view.addItem(os.path.join(root, file))
+                    song_path = os.path.join(root, file)
+                    self.playlist.append(song_path)
+                    self.playlist_view.addItem(song_path)
+                    self.update_library_metadata(song_path)
+
+    def update_library_metadata(self, song_path):
+        try:
+            audio = mutagen.File(song_path)
+            artist = audio.get("artist", ["Unknown Artist"])[0]
+            title = audio.get("title", ["Unknown Title"])[0]
+            genre = audio.get("genre", ["Unknown Genre"])[0]
+            # Organize based on metadata (artist, genre, etc.)
+            # Update UI accordingly
+        except Exception as e:
+            print(f"Error reading metadata: {e}")
 
     def update_song_label(self):
         if pygame.mixer.music.get_busy():
@@ -297,8 +330,56 @@ class WinampClone(QMainWindow):
     def play_selected_song(self):
         index = self.playlist_view.currentRow()
         if index >= 0:
-            self.current_song_index = index
+            if hasattr(self, 'search_results') and self.search_results:
+                # Use the original index from the search results
+                self.current_song_index = self.search_indices[index]
+            else:
+                # Use the index directly from the full playlist
+                self.current_song_index = index
             self.play()
+
+    def search_library(self):
+        query = self.search_box.text().lower()
+        self.search_results = []  # This will hold the paths of the search results
+        self.search_indices = []  # This will hold the original indices of the search results
+
+        if query:
+            for index, song_path in enumerate(self.playlist):
+                try:
+                    audio = EasyID3(song_path)
+                    title = audio.get("title", ["Unknown Title"])[0].lower()
+                    artist = audio.get("artist", ["Unknown Artist"])[0].lower()
+                    album = audio.get("album", ["Unknown Album"])[0].lower()
+                    genre = audio.get("genre", ["Unknown Genre"])[0].lower()
+                    year = audio.get("date", ["Unknown Year"])[0].lower()
+                    if query in title or query in artist or query in album or query in genre or query in year:
+                        self.search_results.append(song_path)
+                        self.search_indices.append(index)  # Save the original index
+                except Exception as e:
+                    print(f"Error reading metadata: {e}")
+
+            # Clear the playlist view
+            self.playlist_view.clear()
+
+            # Update the playlist view with search results
+            for song_path in self.search_results:
+                self.playlist_view.addItem(song_path)
+        else:
+            # If query is empty, display the entire library
+            self.display_full_library()
+
+    def display_full_library(self):
+        # Clear the search results
+        if hasattr(self, 'search_results'):
+            self.search_results.clear()
+            self.search_indices.clear()
+
+        # Clear the playlist view
+        self.playlist_view.clear()
+
+        # Update the playlist view with the entire library
+        for song_path in self.playlist:
+            self.playlist_view.addItem(song_path)
 
 
 def main():
