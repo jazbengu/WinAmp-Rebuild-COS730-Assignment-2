@@ -222,11 +222,13 @@ class WinampClone(QMainWindow):
                 pygame.mixer.music.load(current_song_path)
                 pygame.mixer.music.play()
                 self.update_song_label()
-                self.progress_slider.setRange(0, pygame.mixer.music.get_length())
+                sound = pygame.mixer.Sound(current_song_path)
+                track_length = sound.get_length()
+                self.progress_slider.setRange(0, int(track_length))
                 self.timer = QTimer()
                 self.timer.timeout.connect(self.update_progress)
                 self.timer.start(1000)
-                self.update_duration(pygame.mixer.music.get_length())
+                self.update_duration(track_length)
             except Exception as e:
                 print(f"Error playing song: {e}")
         else:
