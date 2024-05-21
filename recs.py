@@ -18,7 +18,6 @@ class Recommendations:
         }
         try:
             response = requests.get(base_url, params=params)
-            print(f"API Request URL: {response.url}")  # Debugging print
             response.raise_for_status()  # Raise an exception for HTTP errors
             response_json = response.json()
             print(f"API Response: {json.dumps(response_json, indent=4)}")  # Debugging print
@@ -37,7 +36,6 @@ class Recommendations:
         }
         try:
             response = requests.get(base_url, params=params)
-            print(f"Artist Similar API Request URL: {response.url}")  # Debugging print
             response.raise_for_status()  # Raise an exception for HTTP errors
             response_json = response.json()
             print(f"Artist Similar API Response: {json.dumps(response_json, indent=4)}")  # Debugging print

@@ -1,96 +1,86 @@
 import os
-import numpy as np
-import librosa
-from PyQt5.QtWidgets import QFileDialog, QPushButton, QVBoxLayout, QDialog, QLineEdit, QLabel, QMessageBox
-from sklearn.metrics.pairwise import cosine_similarity
+import mutagen
+from mutagen.easyid3 import EasyID3
+from PyQt5.QtWidgets import (
+    QMainWindow, QVBoxLayout, QWidget, QComboBox, QSlider, QPushButton, QFileDialog, QMessageBox, QListWidget
+)
+from PyQt5.QtCore import Qt
 
-class SmartPlaylistDialog(QDialog):
-    def __init__(self, parent=None):
+class SmartPlaylistCreator(QMainWindow):
+    def __init__(self, parent=None, songs_metadata=None):
         super().__init__(parent)
-        self.setWindowTitle("Create Smart Playlist")
-        self.setGeometry(200, 200, 400, 200)
-        self.criteria = {}
-        self.init_ui()
+        self.setWindowTitle("Smart Playlist Creator")
+        self.setGeometry(100, 100, 600, 400)
 
-    def init_ui(self):
-        layout = QVBoxLayout()
+        self.song_metadata = songs_metadata if songs_metadata else {}
+        self.playlist = []
 
-        self.playlist_name_label = QLabel("Playlist Name:")
-        layout.addWidget(self.playlist_name_label)
+        central_widget = QWidget()
+        layout = QVBoxLayout(central_widget)
+        self.setCentralWidget(central_widget)
 
-        self.playlist_name_input = QLineEdit()
-        layout.addWidget(self.playlist_name_input)
+        # Genre selection
+        self.genre_combo = QComboBox()
+        self.genre_combo.addItem("All")
+        self.genre_combo.addItems(set(metadata['genre'] for metadata in self.song_metadata.values()))
+        layout.addWidget(self.genre_combo)
 
-        self.save_button = QPushButton("Save Playlist")
-        self.save_button.clicked.connect(self.save_playlist)
-        layout.addWidget(self.save_button)
+        # Tempo selection
+        self.tempo_slider = QSlider(Qt.Horizontal)
+        self.tempo_slider.setRange(0, 200)
+        self.tempo_slider.setValue(100)
+        layout.addWidget(self.tempo_slider)
 
-        self.setLayout(layout)
+        # Artist selection
+        self.artist_combo = QComboBox()
+        self.artist_combo.addItem("All")
+        self.artist_combo.addItems(set(metadata['artist'] for metadata in self.song_metadata.values()))
+        layout.addWidget(self.artist_combo)
 
-    def extract_features(self, file_path):
-        try:
-            y, sr = librosa.load(file_path)
-            features = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-            mean_features = np.mean(features, axis=1)
-            return mean_features
-        except Exception as e:
-            print(f"Error extracting features from {file_path}: {e}")
-            return None
+        # Create playlist button
+        self.create_playlist_button = QPushButton("Create Playlist")
+        self.create_playlist_button.clicked.connect(self.create_smart_playlist)
+        layout.addWidget(self.create_playlist_button)
 
-    def find_similar_songs(self, base_features, music_folder, num_songs=15):
-        song_features = []
-        song_paths = []
+        # Playlist view
+        self.playlist_view = QListWidget()
+        layout.addWidget(self.playlist_view)
 
-        for root, _, files in os.walk(music_folder):
-            for file in files:
-                if file.endswith('.mp3'):
-                    file_path = os.path.join(root, file)
-                    features = self.extract_features(file_path)
-                    if features:
-                        song_features.append(features)
-                        song_paths.append(file_path)
+        # Save playlist button
+        self.save_playlist_button = QPushButton("Save Playlist")
+        self.save_playlist_button.clicked.connect(self.save_playlist)
+        layout.addWidget(self.save_playlist_button)
 
-        if not song_features:
-            return []
+    def create_smart_playlist(self):
+        selected_genre = self.genre_combo.currentText()
+        selected_tempo = self.tempo_slider.value()
+        selected_artist = self.artist_combo.currentText()
 
-        song_features = np.array(song_features)
-        similarities = cosine_similarity([base_features], song_features)[0]
-        similar_indices = similarities.argsort()[-num_songs:][::-1]
+        self.playlist = [
+            song_path
+            for song_path, metadata in self.song_metadata.items()
+            if (selected_genre == "All" or metadata["genre"] == selected_genre)
+            and (selected_artist == "All" or metadata["artist"] == selected_artist)
+            and abs(metadata["tempo"] - selected_tempo) <= 10
+        ]
 
-        similar_songs = [song_paths[i] for i in similar_indices]
-        return similar_songs
-
-    def create_smart_playlist(self, seed_song_path, music_folder, save_path):
-        base_features = self.extract_features(seed_song_path)
-        if not base_features:
-            print("Error: Failed to extract features from the seed song.")
-            return
-
-        similar_songs = self.find_similar_songs(base_features, music_folder)
-        if similar_songs:
-            with open(save_path, 'w') as f:
-                for song in similar_songs:
-                    f.write(f"{song}\n")
-            QMessageBox.information(self, "Success", f"Playlist saved to {save_path}")
-        else:
-            QMessageBox.warning(self, "Warning", "No similar songs found.")
+        self.playlist_view.clear()
+        for song_path in self.playlist:
+            self.playlist_view.addItem(os.path.basename(song_path))
 
     def save_playlist(self):
-        playlist_name = self.playlist_name_input.text().strip()
-        if not playlist_name:
-            QMessageBox.warning(self, "Warning", "Please enter a playlist name.")
+        if not self.playlist:
+            QMessageBox.warning(self, "Empty Playlist", "Please create a playlist first.")
             return
 
-        music_folder = QFileDialog.getExistingDirectory(self, "Select Music Folder")
-        if not music_folder:
-            return
-
-        seed_song_path, _ = QFileDialog.getOpenFileName(self, "Select Seed Song", "", "Audio Files (*.mp3)")
-        if not seed_song_path:
-            return
-
-        save_path, _ = QFileDialog.getSaveFileName(self, "Save Playlist", playlist_name, "Playlist Files (*.m3u)")
-        if not save_path:
-            return
-
-        self.create_smart_playlist(seed_song_path, music_folder, save_path)
+        file_dialog = QFileDialog()
+        file_dialog.setAcceptMode(QFileDialog.AcceptSave)
+        file_dialog.setDefaultSuffix("m3u")
+        file_dialog.setNameFilter("Playlist (*.m3u)")
+        if file_dialog.exec_():
+            save_path = file_dialog.selectedFiles()[0]
+            with open(save_path, 'w') as file:
+                file.write(f"# Playlist\n")
+                for song_path in self.playlist:
+                    file.write(song_path + '\n')
+            QMessageBox.information(self, "Playlist Saved", "Playlist has been saved.")

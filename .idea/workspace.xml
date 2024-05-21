@@ -1,15 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="AnalysisUIOptions">
+    <option name="ANALYZE_INJECTED_CODE" value="false" />
+  </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Started on styling">
-      <change afterPath="$PROJECT_DIR$/fonts/OFL.txt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/fonts/PressStart2P-Regular.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/style.qss" afterDir="false" />
+    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Fixed Label">
+      <change afterPath="$PROJECT_DIR$/.idea/aws.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recs.py" beforeDir="false" afterPath="$PROJECT_DIR$/recs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart_playlisting.py" beforeDir="false" afterPath="$PROJECT_DIR$/smart_playlisting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_PyQt5.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test_PyQt5.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test_gui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_recs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test_recs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test_smart_playlisting.py" beforeDir="false" afterPath="$PROJECT_DIR$/test_smart_playlisting.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -46,6 +52,9 @@
     &quot;accountId&quot;: &quot;ddc2a6e3-7a20-4b3d-b9fa-e0bee70b4fed&quot;
   }
 }</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 5
 }</component>
@@ -57,28 +66,34 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in for_lyrics.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_PyQt5.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_gui.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_recs.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_smart_playlisting.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.lyrics.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.recs.executor&quot;: &quot;Run&quot;,
-    &quot;Python.smart_playlisting.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/zozoj/PycharmProjects/Winamp&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Python tests.Python tests in for_lyrics.py.executor": "Run",
+    "Python tests.Python tests in test_PyQt5.py.executor": "Run",
+    "Python tests.Python tests in test_gui.py.executor": "Run",
+    "Python tests.Python tests in test_recs.py.executor": "Run",
+    "Python tests.Python tests in test_smart_playlisting.py.executor": "Run",
+    "Python.lyrics.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.recs.executor": "Run",
+    "Python.smart_playlisting.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/zozoj/PycharmProjects/Winamp",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\zozoj\PycharmProjects\Winamp" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\zozoj\PycharmProjects\Winamp" />
+      <recent name="C:\Users\zozoj\PycharmProjects\Winamp\Tests" />
     </key>
   </component>
   <component name="RunManager">
@@ -95,7 +110,7 @@
       <option name="IS_MODULE_SDK" value="true" />
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/smart_playlisting.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\zozoj\PycharmProjects\Winamp\Tests\smart_playlisting.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -262,7 +277,31 @@
       <option name="project" value="LOCAL" />
       <updated>1716214319128</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Fixed the playback functionality (started using pygame instead for PyQt5)">
+      <option name="closed" value="true" />
+      <created>1716222152913</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1716222152913</updated>
+    </task>
+    <task id="LOCAL-00019" summary="Added capabilities to traverse music library">
+      <option name="closed" value="true" />
+      <created>1716292208659</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1716292208659</updated>
+    </task>
+    <task id="LOCAL-00020" summary="Fixed Label">
+      <option name="closed" value="true" />
+      <created>1716309117554</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1716309117554</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -308,16 +347,10 @@
     <MESSAGE value="Editing" />
     <MESSAGE value="Testing smart playlisting" />
     <MESSAGE value="Started on styling" />
-    <option name="LAST_COMMIT_MESSAGE" value="Started on styling" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/smart_playlisting.py</url>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Fixed the playback functionality (started using pygame instead for PyQt5)" />
+    <MESSAGE value="Added capabilities to traverse music library" />
+    <MESSAGE value="Generic Playlisting" />
+    <MESSAGE value="Fixed Label" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed Label" />
   </component>
 </project>
