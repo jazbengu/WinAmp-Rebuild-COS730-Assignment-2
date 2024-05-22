@@ -1,6 +1,6 @@
 import unittest
 from unittest.mock import patch, MagicMock
-from recs import Recommendations
+from myapp.recs import Recommendations
 import requests
 from PyQt5.QtWidgets import QApplication, QTabWidget, QTextEdit
 

@@ -7,11 +7,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Tidy Up Code">
-      <change afterPath="$PROJECT_DIR$/Winamp-logo.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Winamp-logo.svg" afterDir="false" />
+    <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Added Logo">
+      <change afterPath="$PROJECT_DIR$/myapp/Dockerfile" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/myapp/Winamp-logo.svg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/myapp/requirements.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/13 - This Is Why We Can't Have Nice Things.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/13 - This Is Why We Can't Have Nice Things.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/8ae79419354df7e34638659d388a6963.jpg" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/8ae79419354df7e34638659d388a6963.jpg" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Tests/test_recs.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test_recs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Winamp-logo.png" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/Winamp-logo.png" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/for_lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/for_lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lyrics.py" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/lyrics.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/recs.py" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/recs.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/smart_playlisting.py" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/smart_playlisting.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/style.qss" beforeDir="false" afterPath="$PROJECT_DIR$/myapp/style.qss" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +33,7 @@
       <list>
         <option value="Python Script" />
         <option value="Python Unit Test" />
+        <option value="Dockerfile" />
       </list>
     </option>
   </component>
@@ -62,29 +73,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_ADD_EXTERNAL_FILES&quot;: &quot;true&quot;,
-    &quot;Python tests.Python tests in for_lyrics.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_PyQt5.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_gui.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_main.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_recs.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Python tests in test_smart_playlisting.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python tests.Unittests for test_main.TestWinampClone.test_add_music_from_directory.executor&quot;: &quot;Run&quot;,
-    &quot;Python.lyrics.executor&quot;: &quot;Run&quot;,
-    &quot;Python.main.executor&quot;: &quot;Run&quot;,
-    &quot;Python.recs.executor&quot;: &quot;Run&quot;,
-    &quot;Python.smart_playlisting.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/zozoj/PycharmProjects/Winamp&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;aDefault&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_ADD_EXTERNAL_FILES": "true",
+    "Docker.Dockerfile.executor": "Run",
+    "Python tests.Python tests in for_lyrics.py.executor": "Run",
+    "Python tests.Python tests in test_PyQt5.py.executor": "Run",
+    "Python tests.Python tests in test_gui.py.executor": "Run",
+    "Python tests.Python tests in test_main.py.executor": "Run",
+    "Python tests.Python tests in test_recs.py.executor": "Run",
+    "Python tests.Python tests in test_smart_playlisting.py.executor": "Run",
+    "Python tests.Unittests for test_main.TestWinampClone.test_add_music_from_directory.executor": "Run",
+    "Python.lyrics.executor": "Run",
+    "Python.main.executor": "Run",
+    "Python.recs.executor": "Run",
+    "Python.smart_playlisting.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "master",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/Users/zozoj/PycharmProjects/Winamp",
+    "run.code.analysis.last.selected.profile": "aDefault",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\zozoj\PycharmProjects\Winamp" />
@@ -117,6 +129,14 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="Dockerfile" type="docker-deploy" factoryName="dockerfile" temporary="true" server-name="Docker">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="sourceFilePath" value="Dockerfile" />
+        </settings>
+      </deployment>
+      <method v="2" />
+    </configuration>
     <configuration name="Unittests for test_main.TestWinampClone.test_add_music_from_directory" type="tests" factoryName="Unittests" temporary="true" nameIsGenerated="true">
       <module name="Winamp" />
       <option name="ENV_FILES" value="" />
@@ -134,6 +154,7 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Docker.Dockerfile" />
         <item itemvalue="Python.smart_playlisting" />
         <item itemvalue="Python tests.Unittests for test_main.TestWinampClone.test_add_music_from_directory" />
       </list>
@@ -355,7 +376,15 @@
       <option name="project" value="LOCAL" />
       <updated>1716405853729</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Added Logo">
+      <option name="closed" value="true" />
+      <created>1716406479397</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1716406479397</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -406,6 +435,7 @@
     <MESSAGE value="Generic Playlisting" />
     <MESSAGE value="Fixed Label" />
     <MESSAGE value="Tidy Up Code" />
-    <option name="LAST_COMMIT_MESSAGE" value="Tidy Up Code" />
+    <MESSAGE value="Added Logo" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Logo" />
   </component>
 </project>
