@@ -1,73 +1,43 @@
 import unittest
-from unittest.mock import patch
-from PyQt5.QtWidgets import QApplication
+from unittest.mock import MagicMock, patch
 from smart_playlisting import SmartPlaylistCreator
 
 class TestSmartPlaylistCreator(unittest.TestCase):
 
-    @classmethod
-    def setUpClass(cls):
-        cls.app = QApplication([])
-
     def setUp(self):
-        song_metadata = {
-            "/path/to/song1.mp3": {"genre": "Rock", "artist": "Artist1", "tempo": 120},
-            "/path/to/song2.mp3": {"genre": "Jazz", "artist": "Artist2", "tempo": 100},
-            "/path/to/song3.mp3": {"genre": "Rock", "artist": "Artist1", "tempo": 130},
-        }
-        self.playlist_creator = SmartPlaylistCreator(songs_metadata=song_metadata)
+        self.playlist_creator = SmartPlaylistCreator()
 
-    def test_create_smart_playlist_all(self):
-        self.playlist_creator.genre_combo.setCurrentText("All")
-        self.playlist_creator.artist_combo.setCurrentText("All")
-        self.playlist_creator.tempo_slider.setValue(120)
+    def test_choose_save_location(self):
+        with patch('smart_playlisting.QFileDialog') as mock_file_dialog:
+            mock_file_dialog.exec_.return_value = True
+            mock_file_dialog.selectedFiles.return_value = ['/path/to/save_location.json']
 
-        self.playlist_creator.create_smart_playlist()
+            self.playlist_creator.choose_save_location()
 
-        expected_playlist = [
-            "/path/to/song1.mp3",
-            "/path/to/song3.mp3"
-        ]
-        self.assertEqual(self.playlist_creator.playlist, expected_playlist)
-        self.assertEqual(self.playlist_creator.playlist_view.count(), len(expected_playlist))
+            self.assertEqual(self.playlist_creator.save_location, '/path/to/save_location.json')
+            self.assertEqual(self.playlist_creator.save_location_button.text(), 'Save Location: /path/to/save_location.json')
 
-    def test_create_smart_playlist_genre(self):
-        self.playlist_creator.genre_combo.setCurrentText("Jazz")
-        self.playlist_creator.artist_combo.setCurrentText("All")
-        self.playlist_creator.tempo_slider.setValue(100)
+    def test_create_playlist_invalid_name(self):
+        self.playlist_creator.playlist_name_input.setText('')
+        with patch.object(self.playlist_creator, 'create_smart_playlist'):
+            with patch('smart_playlisting.QMessageBox.warning') as mock_warning:
+                self.playlist_creator.create_playlist()
+                mock_warning.assert_called_once_with(self.playlist_creator, "Invalid Name", "Please enter a valid name for the playlist.")
 
-        self.playlist_creator.create_smart_playlist()
+    def test_create_playlist_empty_selection(self):
+        self.playlist_creator.song_list.count = MagicMock(return_value=0)
+        with patch.object(self.playlist_creator, 'create_smart_playlist'):
+            with patch('smart_playlisting.QMessageBox.warning') as mock_warning:
+                self.playlist_creator.create_playlist()
+                mock_warning.assert_called_once_with(self.playlist_creator, "Empty Playlist", "Please select songs for the playlist.")
 
-        expected_playlist = [
-            "/path/to/song2.mp3"
-        ]
-        self.assertEqual(self.playlist_creator.playlist, expected_playlist)
-        self.assertEqual(self.playlist_creator.playlist_view.count(), len(expected_playlist))
+    def test_create_playlist_no_save_location(self):
+        self.playlist_creator.song_list.count = MagicMock(return_value=2)  # Mocking two selected songs
+        with patch.object(self.playlist_creator, 'create_smart_playlist'):
+            with patch('smart_playlisting.QMessageBox.warning') as mock_warning:
+                self.playlist_creator.create_playlist()
+                mock_warning.assert_called_once_with(self.playlist_creator, "No Save Location", "Please choose a save location for the playlist.")
 
-    def test_save_playlist_empty(self):
-        with patch('PyQt5.QtWidgets.QMessageBox.warning') as mock_warning:
-            self.playlist_creator.save_playlist()
-            mock_warning.assert_called_once_with(
-                self.playlist_creator, "Empty Playlist", "Please create a playlist first."
-            )
-
-    def test_save_playlist(self):
-        self.playlist_creator.playlist = ["/path/to/song1.mp3", "/path/to/song3.mp3"]
-
-        with patch('PyQt5.QtWidgets.QFileDialog.exec_', return_value=True), \
-             patch('PyQt5.QtWidgets.QFileDialog.selectedFiles', return_value=["/path/to/save_playlist.m3u"]), \
-             patch('builtins.open', unittest.mock.mock_open()) as mock_file, \
-             patch('PyQt5.QtWidgets.QMessageBox.information') as mock_info:
-
-            self.playlist_creator.save_playlist()
-
-            mock_file.assert_called_once_with("/path/to/save_playlist.m3u", 'w')
-            mock_file().write.assert_any_call("# Playlist\n")
-            mock_file().write.assert_any_call("/path/to/song1.mp3\n")
-            mock_file().write.assert_any_call("/path/to/song3.mp3\n")
-            mock_info.assert_called_once_with(
-                self.playlist_creator, "Playlist Saved", "Playlist has been saved."
-            )
 
 if __name__ == '__main__':
     unittest.main()

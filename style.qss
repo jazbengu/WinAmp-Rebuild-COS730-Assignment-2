@@ -2,10 +2,12 @@
 QWidget {
     background-color: #1C1C1C; /* Dark blue background */
     color: #00FF00; /* Pixely green text */
+    font-size: 16px; /* Increase the font size to 16 pixels */
 }
 
 QTextEdit, QListWidget, QLabel {
     font-family: "Press Start 2P", monospace; /* Use the pixely font */
+    font-size: 16px; /* Increase the font size to 16 pixels */
 }
 
 /* Playlist item background */
@@ -15,14 +17,15 @@ QListWidget {
 
 /* Selected playlist item background */
 QListWidget::item:selected {
-    background-color: #2F4F4F; /* Dark green */
+    background-color: #2F4F4F;
 }
 
 /* Buttons */
 QPushButton {
-    background-color: #696969; /* Dark gray */
-    color: #00FF00; /* Pixely green text */
-    border: 1px solid #00FF00; /* Green border */
+    background-color: #696969;
+    color: #00FF00;
+    border: 1px solid #00FF00;
+    font-size: 16px; /* Increase the font size to 16 pixels */
 }
 
 QPushButton:hover {
@@ -35,7 +38,7 @@ QSlider {
 }
 
 QSlider::handle:horizontal {
-    background-color: #00FF00; /* Pixely green handle */
+    background-color: #00FF00;
 }
 
 /* Tab widget */
@@ -44,11 +47,12 @@ QTabWidget::pane {
 }
 
 QTabBar::tab {
-    background-color: #2F4F4F; /* Dark green */
-    color: #00FF00; /* Pixely green text */
+    background-color: #2F4F4F;
+    color: #00FF00;
+    font-size: 16px; /* Increase the font size to 16 pixels */
 }
 
 QTabBar::tab:selected {
-    background-color: #1C1C1C; /* Dark blue for selected tab */
-    color: #00FF00; /* Pixely green text */
+    background-color: #1C1C1C;
+    color: #00FF00;
 }

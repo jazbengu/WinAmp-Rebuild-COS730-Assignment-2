@@ -10,7 +10,7 @@ from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, \
     QListWidget, QTextEdit, QFileDialog, QSlider, QMenuBar, QAction, QDialog, QTabWidget, QLineEdit, QMessageBox, \
-    QDialogButtonBox, QAbstractItemView
+    QDialogButtonBox, QAbstractItemView, QProgressBar
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlaylist
 from mutagen.easyid3 import EasyID3
 import librosa
@@ -55,8 +55,8 @@ class PlaylistCreator(QDialog):
     def choose_save_location(self):
         file_dialog = QFileDialog()
         file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-        file_dialog.setDefaultSuffix("m3u")
-        file_dialog.setNameFilter("Playlist (*.m3u)")
+        file_dialog.setDefaultSuffix("json")
+        file_dialog.setNameFilter("Playlist (*.json)")
         if file_dialog.exec_():
             self.save_location = file_dialog.selectedFiles()[0]
             self.save_location_button.setText(f"Save Location: {self.save_location}")
@@ -80,11 +80,12 @@ class PlaylistCreator(QDialog):
         QMessageBox.information(self, "Playlist Created", "Playlist has been created and saved.")
 
     def save_playlist(self, playlist_name, song_paths, save_location):
+        playlist_data = {
+            "playlist_name": playlist_name,
+            "songs": song_paths
+        }
         with open(save_location, 'w', encoding='utf-8') as file:
-            file.write(f"# Playlist: {playlist_name}\n")
-            for song_path in song_paths:
-                song_title = self.get_song_title(song_path)
-                file.write(f"{song_path} # {song_title}\n")
+            json.dump(playlist_data, file, indent=4)
 
     def get_song_title(self, song_path):
         try:
@@ -99,20 +100,11 @@ class PlaylistCreator(QDialog):
             self.song_list.addItem(f"{song_title} ({song_path})")
 
 
-    def populate_playlist_view(self):
-        for song in self.playlist:
-            self.playlist_view.addItem(song)
-
-    def selected_songs(self):
-        selected_items = self.playlist_view.selectedItems()
-        self.selected_songs_list = [item.text() for item in selected_items]
-        return self.selected_songs_list
-
 
 class WinampClone(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("Winamp Clone")
+        self.setWindowTitle("Winamp Music Player")
         self.setGeometry(100, 100, 800, 600)
         mixer.init()  # Initialize Pygame mixer
         self.search_box = QLineEdit()
@@ -124,13 +116,11 @@ class WinampClone(QMainWindow):
         self.previous_button = QPushButton("Previous")
         self.next_button = QPushButton("Next")
         self.volume_slider = QSlider(Qt.Horizontal)
-        self.volume_slider.setValue(50)  # Example initial volume
-        self.progress_slider = QSlider(Qt.Horizontal)
-        self.progress_slider.setRange(0, 0)
+        self.volume_slider.setValue(50)
         self.current_time_label = QLabel("00:00")
         self.total_time_label = QLabel("00:00")
-        self.playlist = []  # Store playlist as a list of file paths
-        self.current_song_index = -1  # Index of the currently playing song
+        self.playlist = []
+        self.current_song_index = -1
         self.init_ui()
 
     def init_ui(self):
@@ -143,13 +133,15 @@ class WinampClone(QMainWindow):
         control_layout.addWidget(self.previous_button)
         control_layout.addWidget(self.next_button)
         self.current_song_label = QLabel()
+        self.progress_bar = QProgressBar()
+        self.progress_bar.setRange(0, 100)
         time_layout = QHBoxLayout()
         time_layout.addWidget(self.current_time_label)
-        time_layout.addWidget(self.progress_slider)
         time_layout.addWidget(self.total_time_label)
         layout = QVBoxLayout()
         layout.addWidget(self.playlist_view)
         layout.addWidget(self.current_song_label)
+        layout.addWidget(self.progress_bar)
         layout.addLayout(control_layout)
         layout.addLayout(time_layout)
         layout.addWidget(self.volume_slider)
@@ -161,7 +153,7 @@ class WinampClone(QMainWindow):
         layout.addWidget(self.search_box)
         self.init_connections()
 
-        # Create tab widget
+
         self.tabs = QTabWidget()
         self.lyrics_tab = QTextEdit()
         self.lyrics_tab.setReadOnly(True)
@@ -176,7 +168,7 @@ class WinampClone(QMainWindow):
     def create_menu(self):
         menu_bar = self.menuBar()
 
-        # File menu
+
         file_menu = menu_bar.addMenu("File")
 
         fetch_lyrics_action = QAction("Fetch Lyrics", self)
@@ -191,7 +183,7 @@ class WinampClone(QMainWindow):
         add_music_action.triggered.connect(self.add_music_dialog)
         file_menu.addAction(add_music_action)
 
-        # Playlisting menu
+
         playlisting_menu = menu_bar.addMenu("Playlisting")
 
         create_playlist_action = QAction("Create Playlist", self)
@@ -205,6 +197,7 @@ class WinampClone(QMainWindow):
         smart_playlist_action = QAction("Smart Playlist", self)
         smart_playlist_action.triggered.connect(self.create_smart_playlist_dialog)
         playlisting_menu.addAction(smart_playlist_action)
+
 
     def init_connections(self):
         self.play_button.clicked.connect(self.play)
@@ -224,9 +217,8 @@ class WinampClone(QMainWindow):
                 self.update_song_label()
                 sound = pygame.mixer.Sound(current_song_path)
                 track_length = sound.get_length()
-                self.progress_slider.setRange(0, int(track_length))
-                self.timer = QTimer()
-                self.timer.timeout.connect(self.update_progress)
+
+
                 self.timer.start(1000)
                 self.update_duration(track_length)
             except Exception as e:
@@ -251,22 +243,14 @@ class WinampClone(QMainWindow):
 
     def update_position(self, position):
         position_time = QTime(0, (position / 60000) % 60, (position / 1000) % 60)
-        self.current_time_label.setText(position_time.toString())
-        self.progress_slider.setValue(position)
 
-    def update_position(self, position):
-        minutes, seconds = divmod(position // 1000, 60)
-        position_time = QTime(0, minutes, seconds)
-        self.current_time_label.setText(position_time.toString())
-        self.progress_slider.setValue(position)
 
     def create_playlist_dialog(self):
         self.playlist_creator_dialog = PlaylistCreator()
-        self.playlist_creator_dialog.populate_song_list(self.playlist)  # Pass current playlist to the dialog
-        self.playlist_creator_dialog.exec_()  # Show the dialog modally
+        self.playlist_creator_dialog.populate_song_list(self.playlist)
+        self.playlist_creator_dialog.exec_()
 
     def filter_music_library(self, criteria):
-        # Example implementation: Filter music library based on criteria (Replace with your logic)
         filtered_tracks = []
         for track in self.playlist:
             if self.check_criteria(track, criteria):
@@ -327,8 +311,6 @@ class WinampClone(QMainWindow):
             artist = audio.get("artist", ["Unknown Artist"])[0]
             title = audio.get("title", ["Unknown Title"])[0]
             genre = audio.get("genre", ["Unknown Genre"])[0]
-            # Organize based on metadata (artist, genre, etc.)
-            # Update UI accordingly
         except Exception as e:
             print(f"Error reading metadata: {e}")
 
@@ -363,26 +345,14 @@ class WinampClone(QMainWindow):
     def load_playlist(self):
         file_dialog = QFileDialog()
         file_dialog.setFileMode(QFileDialog.ExistingFiles)
-        file_dialog.setNameFilter("Playlist (*.m3u)")
+        file_dialog.setNameFilter("Playlist Files (*.json)")
         if file_dialog.exec_():
-            playlist_files = file_dialog.selectedFiles()
-            for playlist_file in playlist_files:
-                with open(playlist_file, 'r') as file:
-                    for line in file:
-                        if line.strip():
-                            self.playlist.append(line.strip())
-                            self.playlist_view.addItem(line.strip())
+            selected_file = file_dialog.selectedFiles()[0]
+            with open(selected_file, 'r', encoding='utf-8') as file:
+                playlist_data = json.load(file)
+                self.playlist = playlist_data['songs']
+                self.populate_playlist_view()
 
-    def save_playlist(self):
-        file_dialog = QFileDialog()
-        file_dialog.setAcceptMode(QFileDialog.AcceptSave)
-        file_dialog.setDefaultSuffix("m3u")
-        file_dialog.setNameFilter("Playlist (*.m3u)")
-        if file_dialog.exec_():
-            save_path = file_dialog.selectedFiles()[0]
-            with open(save_path, 'w') as file:
-                for song_path in self.playlist:
-                    file.write(song_path + '\n')
 
     def fetch_lyrics(self):
         index = self.playlist_view.currentRow()
@@ -429,8 +399,8 @@ class WinampClone(QMainWindow):
 
     def search_library(self):
         query = self.search_box.text().lower()
-        self.search_results = []  # This will hold the paths of the search results
-        self.search_indices = []  # This will hold the original indices of the search results
+        self.search_results = []
+        self.search_indices = []
 
         if query:
             for index, song_path in enumerate(self.playlist):
@@ -443,30 +413,26 @@ class WinampClone(QMainWindow):
                     year = audio.get("date", ["Unknown Year"])[0].lower()
                     if query in title or query in artist or query in album or query in genre or query in year:
                         self.search_results.append(song_path)
-                        self.search_indices.append(index)  # Save the original index
+                        self.search_indices.append(index)
                 except Exception as e:
                     print(f"Error reading metadata: {e}")
 
-            # Clear the playlist view
+
             self.playlist_view.clear()
 
-            # Update the playlist view with search results
+
             for song_path in self.search_results:
                 self.playlist_view.addItem(song_path)
         else:
-            # If query is empty, display the entire library
             self.display_full_library()
 
     def display_full_library(self):
-        # Clear the search results
         if hasattr(self, 'search_results'):
             self.search_results.clear()
             self.search_indices.clear()
 
-        # Clear the playlist view
         self.playlist_view.clear()
 
-        # Update the playlist view with the entire library
         for song_path in self.playlist:
             self.playlist_view.addItem(song_path)
 
