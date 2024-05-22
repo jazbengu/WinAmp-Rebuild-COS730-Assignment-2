@@ -1,9 +1,0 @@
-PyQt5~=5.15.10
-requests~=2.31.0
-mutagen~=1.47.0
-pygame~=2.5.2
-librosa~=0.10.2.post1
-spotipy~=2.23.0
-lyricsgenius~=3.0.1
-numpy~=1.26.4
-scikit-learn~=1.4.2

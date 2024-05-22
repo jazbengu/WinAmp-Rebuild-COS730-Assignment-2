@@ -1,0 +1,9 @@
+PyQt5
+requests
+mutagen
+pygame
+librosa
+spotipy
+lyricsgenius
+numpy
+scikit-learn
