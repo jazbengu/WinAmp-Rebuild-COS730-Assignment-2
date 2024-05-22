@@ -8,8 +8,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="2f7359c2-6b19-40c9-894f-4b6c929a1d6f" name="Changes" comment="Tidy Up Code">
+      <change afterPath="$PROJECT_DIR$/Winamp-logo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Winamp-logo.svg" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Tests/test_gui.py" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/test_gui.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -337,7 +339,23 @@
       <option name="project" value="LOCAL" />
       <updated>1716405427305</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Tidy Up Code">
+      <option name="closed" value="true" />
+      <created>1716405830034</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1716405830034</updated>
+    </task>
+    <task id="LOCAL-00025" summary="Tidy Up Code">
+      <option name="closed" value="true" />
+      <created>1716405853729</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1716405853729</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">

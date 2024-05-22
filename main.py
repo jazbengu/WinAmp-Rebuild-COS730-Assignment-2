@@ -5,6 +5,7 @@ import os
 
 import mutagen
 import pygame
+from PyQt5.uic.Compiler.qtproxies import QtGui
 from pygame import mixer
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt, QUrl, QTime, QTimer
@@ -30,22 +31,18 @@ class PlaylistCreator(QDialog):
         layout = QVBoxLayout()
         self.setLayout(layout)
 
-        # Song list
         self.song_list = QListWidget()
         self.song_list.setSelectionMode(QListWidget.MultiSelection)
         layout.addWidget(self.song_list)
 
-        # Playlist name input
         self.playlist_name_input = QLineEdit()
         self.playlist_name_input.setPlaceholderText("Enter playlist name")
         layout.addWidget(self.playlist_name_input)
 
-        # Save location button
         self.save_location_button = QPushButton("Choose Save Location")
         self.save_location_button.clicked.connect(self.choose_save_location)
         layout.addWidget(self.save_location_button)
 
-        # Create playlist button
         self.create_playlist_button = QPushButton("Create Playlist")
         self.create_playlist_button.clicked.connect(self.create_playlist)
         layout.addWidget(self.create_playlist_button)
@@ -105,6 +102,7 @@ class WinampClone(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Winamp Music Player")
+        self.setWindowIcon(QIcon("Winamp-logo.png"))
         self.setGeometry(100, 100, 800, 600)
         mixer.init()  # Initialize Pygame mixer
         self.search_box = QLineEdit()
